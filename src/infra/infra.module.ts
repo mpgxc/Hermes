@@ -2,9 +2,13 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { MulterModule } from '@nestjs/platform-express';
 
+import { multerOptions } from './configs/multerOptions';
 import { MessageController } from './http/controllers/message.controller';
+import { TemplateController } from './http/controllers/template.controller';
 import { MailQueueProvider } from './providers/queue/mail-queue.provider';
+import { StorageFilesProvider } from './providers/storage/storage-files.provider';
 import { TemplateParseProvider } from './providers/template/template-parse.provider';
 import { SendMessageProcessor } from './queue/jobs/send-message.processor';
 import { QueueName } from './queue/queue-container';
@@ -35,13 +39,15 @@ import { SendMessageMailService } from './send-message-mail.service';
     BullModule.registerQueue({
       name: QueueName.SendMessageQueue,
     }),
+    MulterModule.register(multerOptions),
   ],
   providers: [
+    MailQueueProvider,
+    StorageFilesProvider,
     SendMessageProcessor,
     TemplateParseProvider,
-    MailQueueProvider,
     SendMessageMailService,
   ],
-  controllers: [MessageController],
+  controllers: [MessageController, TemplateController],
 })
 export class InfraModule {}
