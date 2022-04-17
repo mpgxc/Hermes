@@ -1,0 +1,18 @@
+version: '3.8'
+
+
+services:
+  queue:
+    image: redis:6.2-alpine
+    container_name: queue-redis
+    restart: always
+    ports:
+      - '${REDIS_PORT}:${REDIS_PORT}'
+    command: redis-server --appendonly yes
+    volumes: 
+      - cache:/data
+
+
+volumes:
+  cache:
+    driver: local
