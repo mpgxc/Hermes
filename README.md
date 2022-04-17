@@ -1,1 +1,1 @@
-![flow-model](flow.jpg)
+![flow-model](.github/flow.jpg)
