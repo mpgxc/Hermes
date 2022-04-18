@@ -61,7 +61,7 @@ export class StorageFilesProvider implements IStorageFilesProvider {
 
     await fs.promises.unlink(file.path);
 
-    return `${fileName}?alt=media&token=${fileToken}`;
+    return fileToken;
   }
 
   async remove(destination: DestinationFile, file: FileUpload): Promise<void> {
