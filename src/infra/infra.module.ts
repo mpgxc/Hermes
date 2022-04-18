@@ -1,4 +1,5 @@
 import { MailerModule } from '@nestjs-modules/mailer';
+import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -40,6 +41,7 @@ import { SendMessageMailService } from './send-message-mail.service';
       name: QueueName.SendMessageQueue,
     }),
     MulterModule.register(multerOptions),
+    HttpModule,
   ],
   providers: [
     MailQueueProvider,
