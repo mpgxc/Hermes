@@ -1,14 +1,27 @@
+import { Type } from 'class-transformer';
 import {
+  IsUUID,
   IsEmail,
   IsArray,
+  IsObject,
   IsString,
   IsNotEmpty,
   ArrayMinSize,
-  IsObject,
-  IsUUID,
+  ValidateNested,
+  IsOptional,
 } from 'class-validator';
 
 type TemplateProps = Record<string, string | number | boolean>;
+
+export class MailAddress {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  address: string;
+}
 
 export class MailMessageInput {
   @IsString()
@@ -16,12 +29,13 @@ export class MailMessageInput {
   subject: string;
 
   @IsArray()
-  @IsNotEmpty()
   @ArrayMinSize(1)
-  @IsEmail({}, { each: true })
-  emails: Array<string>;
+  @ValidateNested({ each: true })
+  @Type(() => MailAddress)
+  recipients: Array<MailAddress>;
 
   @IsObject()
+  @IsOptional()
   templateProps: TemplateProps;
 
   @IsNotEmpty()

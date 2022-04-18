@@ -12,11 +12,12 @@ export class MessageController {
 
   @Post('/send')
   async sendMessage(
-    @Body() { emails, subject, templateId, templateProps }: MailMessageInput,
+    @Body()
+    { recipients, subject, templateId, templateProps }: MailMessageInput,
   ): Promise<void> {
     await this.sendMessageMailService.sendMessage({
-      emails,
       subject,
+      recipients,
       templateId,
       templateProps,
     });

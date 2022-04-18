@@ -14,10 +14,10 @@ export class MailQueueProvider implements IBullQueueProvider {
   ) {}
 
   async addMany(data: MailMessage[]): Promise<void> {
-    const jobs = data.map(({ email, subject, template }) => ({
+    const jobs = data.map(({ to, subject, template }) => ({
       name: QueueJobName.SendMessage,
       data: {
-        email,
+        to,
         subject,
         template,
       },

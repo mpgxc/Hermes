@@ -12,10 +12,10 @@ export class SendMessageProcessor {
 
   @Process(QueueJobName.SendMessage)
   async sendMessage(job: Job<MailMessage>): Promise<void> {
-    const { email, subject, template } = job.data;
+    const { to, subject, template } = job.data;
 
     await this.mailService.sendMail({
-      to: email,
+      to,
       html: template,
       subject,
     });

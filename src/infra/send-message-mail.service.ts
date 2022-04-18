@@ -12,8 +12,8 @@ export class SendMessageMailService {
   ) {}
 
   async sendMessage({
-    emails,
     subject,
+    recipients,
     templateId,
     templateProps,
   }: MailMessageInput): Promise<void> {
@@ -23,8 +23,8 @@ export class SendMessageMailService {
     });
 
     await this.queueMailProvider.addMany(
-      emails.map((email) => ({
-        email,
+      recipients.map((to) => ({
+        to,
         subject,
         template,
       })),
