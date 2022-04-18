@@ -15,7 +15,7 @@ export class TemplateController {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: FileUpload) {
+  async uploadFile(@UploadedFile() file: FileUpload): Promise<void> {
     await this.storageFilesProvider.save('templates', file);
   }
 }
