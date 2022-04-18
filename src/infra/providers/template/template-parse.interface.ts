@@ -1,8 +1,8 @@
 export type TemplateMailProps = Record<string, string | number | boolean>;
 
 export type ParseTemplateMail = {
-  file: string;
-  props: TemplateMailProps;
+  templateId: string;
+  templateProps: TemplateMailProps;
 };
 
 export interface ITemplateParseProvider {
