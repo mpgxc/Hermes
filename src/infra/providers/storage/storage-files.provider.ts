@@ -1,19 +1,24 @@
 import { Injectable } from '@nestjs/common';
 
 import { initializeApp } from 'firebase/app';
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
+import {
+  ref,
+  getStorage,
+  uploadBytes,
+  FirebaseStorage,
+} from 'firebase/storage';
 import * as fs from 'node:fs';
 import { v4 as uuid } from 'uuid';
 
 import {
-  DestinationFile,
   FileUpload,
+  DestinationFile,
   IStorageFilesProvider,
 } from './storage-files.interface';
 
 @Injectable()
 export class StorageFilesProvider implements IStorageFilesProvider {
-  private storage: any;
+  private readonly storage: FirebaseStorage;
 
   constructor() {
     const firebaseConfig = {
