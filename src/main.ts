@@ -7,6 +7,7 @@ import { AppModule } from './app.module';
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(new ValidationPipe());
+  app.setGlobalPrefix('api');
 
   await app.listen(
     Number(process.env.APP_PORT) || 3000,
