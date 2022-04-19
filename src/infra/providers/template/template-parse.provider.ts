@@ -1,7 +1,8 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { Cache } from 'cache-manager';
 import handlebars from 'handlebars';
 
 import {
@@ -14,18 +15,37 @@ export class TemplateParseProvider implements ITemplateParseProvider {
   constructor(
     private readonly httpClient: HttpService,
     private readonly configService: ConfigService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
+
+  private buildTemplateURL(templateId: string): string {
+    return `${this.configService.get<string>(
+      'FIREBASE_BUCKET_PREVIEW_CONTENT',
+    )}${templateId}.html?alt=media&token=${templateId}`;
+  }
 
   async parse({
     templateId,
     templateProps,
   }: ParseTemplateMail): Promise<string> {
-    const templateURL = `${this.configService.get<string>(
-      'FIREBASE_BUCKET_PREVIEW_CONTENT',
-    )}${templateId}.html?alt=media&token=${templateId}`;
+    const templateCacheKey = `template-${templateId}`;
 
-    const { data } = await this.httpClient.get(templateURL).toPromise();
+    let template = await this.cacheManager.get<string>(templateCacheKey);
 
-    return handlebars.compile(data)(templateProps).toString().big();
+    if (!template) {
+      const templateURL = this.buildTemplateURL(templateId);
+
+      const { data } = await this.httpClient
+        .get<string>(templateURL)
+        .toPromise();
+
+      await this.cacheManager.set(templateCacheKey, data);
+
+      template = data;
+    }
+
+    const compiledTemplate = handlebars.compile(template)(templateProps);
+
+    return compiledTemplate.toString().big();
   }
 }
