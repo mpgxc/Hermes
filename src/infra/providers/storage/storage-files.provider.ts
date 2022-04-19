@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { initializeApp } from 'firebase/app';
 import {
@@ -20,12 +21,12 @@ import {
 export class StorageFilesProvider implements IStorageFilesProvider {
   private readonly storage: FirebaseStorage;
 
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
     const firebaseConfig = {
-      apiKey: process.env.FIREBASE_API_KEY,
-      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-      databaseURL: process.env.FIREBASE_DATABASE_URL,
-      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      apiKey: this.configService.get<string>('FIREBASE_API_KEY'),
+      authDomain: this.configService.get<string>('FIREBASE_AUTH_DOMAIN'),
+      databaseURL: this.configService.get<string>('FIREBASE_DATABASE_URL'),
+      storageBucket: this.configService.get<string>('FIREBASE_STORAGE_BUCKET'),
     };
 
     const app = initializeApp(firebaseConfig);
