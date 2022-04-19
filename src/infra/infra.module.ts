@@ -1,9 +1,12 @@
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
+
+import * as redisStore from 'cache-manager-redis-store';
+import type { RedisOptions } from 'ioredis';
 
 import { multerOptions } from './configs/multerOptions';
 import { MessageController } from './http/controllers/message.controller';
@@ -39,6 +42,13 @@ import { SendMessageMailService } from './send-message-mail.service';
     }),
     BullModule.registerQueue({
       name: QueueName.SendMessageQueue,
+    }),
+    CacheModule.register<RedisOptions>({
+      store: redisStore,
+      ttl: 5 * 60, // 5 minutes
+      max: 10, // 10 items
+      host: process.env.REDIS_HOST,
+      port: Number(process.env.REDIS_PORT),
     }),
     MulterModule.register(multerOptions),
     HttpModule,
