@@ -1,0 +1,3 @@
+class MessageRepository {}
+
+export { MessageRepository };
