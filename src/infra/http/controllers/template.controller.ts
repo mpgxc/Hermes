@@ -20,7 +20,7 @@ export class TemplateController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('template'))
   async uploadFile(
-    @Body() { subject, title, description }: TemplateInput,
+    @Body() body: TemplateInput,
     @UploadedFile() templateFile: FileUpload,
   ): Promise<void> {
     if (!templateFile) {
@@ -29,6 +29,8 @@ export class TemplateController {
         'validation failed',
       );
     }
+
+    const { subject, title, description } = body;
 
     await this.createTemplateMail.handle({
       title,
