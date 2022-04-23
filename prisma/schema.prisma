@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Template {
+
+  id           String  @id @default(uuid())
+  title        String
+  subject      String  @unique
+  slug         String  @unique
+  template_url String
+  description  String?
+
+  is_active  Boolean @default(true)
+  is_default Boolean @default(false)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("templates")
+}
