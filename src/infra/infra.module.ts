@@ -5,13 +5,18 @@ import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
 
+import { TemplateMapper } from 'application/mappers/template.mapper';
+import { TemplateRespository } from 'application/repositories/template.repository';
+import { CreateTemplateMail } from 'application/use-cases/create-template-mail';
 import * as redisStore from 'cache-manager-redis-store';
 import type { RedisOptions } from 'ioredis';
 
 import { multerOptions } from './configs/multerOptions';
+import { PrismaService } from './database/prisma.service';
 import { MessageController } from './http/controllers/message.controller';
 import { TemplateController } from './http/controllers/template.controller';
 import { MailQueueProvider } from './providers/queue/mail-queue.provider';
+import { SlugProvider } from './providers/slug/slug.provider';
 import { StorageFilesProvider } from './providers/storage/storage-files.provider';
 import { TemplateParseProvider } from './providers/template/template-parse.provider';
 import { SendMessageProcessor } from './queue/jobs/send-message.processor';
@@ -59,7 +64,13 @@ import { SendMessageMailService } from './send-message-mail.service';
     SendMessageProcessor,
     TemplateParseProvider,
     SendMessageMailService,
+    PrismaService,
+    CreateTemplateMail,
+    TemplateRespository,
+    TemplateMapper,
+    SlugProvider,
   ],
+  exports: [PrismaService, SlugProvider],
   controllers: [MessageController, TemplateController],
 })
 export class InfraModule {}
