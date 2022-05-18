@@ -11,8 +11,11 @@ type CreateTemplateMailInput = {
   description?: string;
 };
 
-interface ICreateTemplateMail {
-  handle(props: CreateTemplateMailInput): Promise<void>;
+/**
+ * Padrão de retorno como void para Commands
+ */
+interface ICreateTemplateMail<Response = void> {
+  handle(props: CreateTemplateMailInput): Promise<Response>;
 }
 
 export { ICreateTemplateMail, CreateTemplateMailInput, FileUpload };

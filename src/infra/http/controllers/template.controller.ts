@@ -4,10 +4,12 @@ import {
   Controller,
   UploadedFile,
   UseInterceptors,
+  ConflictException,
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+import { TemplateErrors } from 'application/errors/template.erros';
 import { CreateTemplateMail } from 'application/use-cases/create-template-mail';
 import { FileUpload } from 'infra/providers/storage/storage-files.interface';
 
@@ -32,11 +34,21 @@ export class TemplateController {
 
     const { subject, title, description } = body;
 
-    await this.createTemplateMail.handle({
+    const result = await this.createTemplateMail.handle({
       title,
       subject,
       description,
       templateFile,
     });
+
+    if (!result.hasError) return;
+
+    switch (result.value.constructor) {
+      case TemplateErrors.TemplateAlreadyExists:
+        throw new ConflictException(result.value.message);
+
+      default:
+        throw new BadRequestException('Error Inesperado!');
+    }
   }
 }
