@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { Cache } from 'cache-manager';
 import handlebars from 'handlebars';
+import { firstValueFrom } from 'rxjs';
 
 import {
   ParseTemplateMail,
@@ -35,9 +36,9 @@ export class TemplateParseProvider implements ITemplateParseProvider {
     if (!template) {
       const templateURL = this.buildTemplateURL(templateId);
 
-      const { data } = await this.httpClient
-        .get<string>(templateURL)
-        .toPromise();
+      const { data } = await firstValueFrom(
+        this.httpClient.get<string>(templateURL),
+      );
 
       await this.cacheManager.set(templateCacheKey, data);
 
